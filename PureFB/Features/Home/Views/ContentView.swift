@@ -1,19 +1,45 @@
+import Foundation
 import SwiftUI
 import WebKit
 
-
-// MARK: - Lớp bọc WKWebView
-struct WebViewWrapper: UIViewRepresentable {
-    let webView: WKWebView
-    
-    func makeUIView(context: Context) -> WKWebView { return webView }
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
-}
-
 // MARK: - Màn hình chính
 struct ContentView: View {
-    @StateObject private var viewModel = FeedViewModel()
+    @Environment(\.modelContext) private var modelContext
+    @State private var viewModel: FeedViewModel?
     @State private var isSyncing: Bool = false
+    
+    var body: some View {
+        Group {
+            if let viewModel = viewModel {
+                ContentViewInternal(viewModel: viewModel, isSyncing: $isSyncing)
+            } else {
+                // Loading state while ViewModel is being created
+                ZStack {
+                    Color.pureBlack.ignoresSafeArea()
+                    VStack {
+                        ProgressView()
+                            .tint(.offWhite)
+                        Text("Đang khởi tạo...")
+                            .font(.system(size: 14))
+                            .foregroundColor(.mutedGrey)
+                            .padding(.top, 8)
+                    }
+                }
+            }
+        }
+        .onAppear {
+            if viewModel == nil {
+                // Initialize ViewModel with ModelContext
+                viewModel = FeedViewModel(modelContext: modelContext)
+            }
+        }
+    }
+}
+
+// MARK: - Internal View (with ViewModel)
+private struct ContentViewInternal: View {
+    @ObservedObject var viewModel: FeedViewModel
+    @Binding var isSyncing: Bool
     
     var body: some View {
         ZStack {
@@ -25,7 +51,7 @@ struct ContentView: View {
                 // Navigation Header: Ultra-slim, Black, Serif Font
                 HStack(alignment: .bottom) {
                     Text("PureFB")
-                        .font(.custom("Georgia", size: 22))
+                        .font(.custom(AppConstants.UI.primaryFont, size: AppConstants.UI.headerFontSize))
                         .foregroundColor(.offWhite)
                     
                     Spacer()
@@ -42,24 +68,71 @@ struct ContentView: View {
                             }
                         }
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, AppConstants.UI.standardHorizontalPadding)
                 .padding(.top, 10)
-                .padding(.bottom, 16)
+                .padding(.bottom, AppConstants.UI.standardVerticalPadding)
                 .background(Color.pureBlack)
                 
                 // Feed Structure: Clean, single-column scrollable
-                ScrollView(showsIndicators: false) {
-                    LazyVStack(spacing: 24) {
-                        ForEach(viewModel.posts, id: \.id) { post in
-                            PostCardView(post: post)
+                if viewModel.isLoading && viewModel.posts.isEmpty {
+                    // Loading skeleton
+                    ScrollView(showsIndicators: false) {
+                        LazyVStack(spacing: 24) {
+                            ForEach(0..<3, id: \.self) { _ in
+                                PostSkeletonView()
+                            }
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 16)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 16)
-                    .padding(.bottom, 60)
-                }
-                .refreshable {
-                    viewModel.fetchPosts()
+                } else if let error = viewModel.errorMessage {
+                    // Error state
+                    VStack(spacing: 16) {
+                        Text("⚠️")
+                            .font(.system(size: 48))
+                        Text(error)
+                            .font(.system(size: 14))
+                            .foregroundColor(.mutedGrey)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 32)
+                        Button("Thử lại") {
+                            viewModel.fetchPosts()
+                        }
+                        .foregroundColor(.offWhite)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 12)
+                        .background(Color.softDarkGrey)
+                        .cornerRadius(AppConstants.UI.cardCornerRadius)
+                    }
+                    .frame(maxHeight: .infinity)
+                } else if viewModel.posts.isEmpty {
+                    // Empty state
+                    VStack(spacing: 16) {
+                        Text("📭")
+                            .font(.system(size: 48))
+                        Text("Chưa có bài viết")
+                            .font(.system(size: 16))
+                            .foregroundColor(.offWhite)
+                        Text("Kéo xuống để tải bài viết mới")
+                            .font(.system(size: 14))
+                            .foregroundColor(.mutedGrey)
+                    }
+                    .frame(maxHeight: .infinity)
+                } else {
+                    // Posts list
+                    ScrollView(showsIndicators: false) {
+                        LazyVStack(spacing: 24) {
+                            ForEach(viewModel.posts, id: \.id) { post in
+                                PostCardView(post: post)
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 16)
+                        .padding(.bottom, 60)
+                    }
+                    .refreshable {
+                        viewModel.fetchPosts()
+                    }
                 }
             }
             
@@ -67,7 +140,7 @@ struct ContentView: View {
             VStack(spacing: 0) {
                 VStack(spacing: 16) {
                     Text("PureFB Authentication")
-                        .font(.custom("Georgia", size: 20))
+                        .font(.custom(AppConstants.UI.primaryFont, size: 20))
                         .foregroundColor(.offWhite)
                     Text("Vui lòng đăng nhập để đồng bộ dữ liệu")
                         .font(.system(size: 14))
@@ -89,10 +162,12 @@ struct ContentView: View {
             .opacity(viewModel.needsLogin ? 1 : 0)
             .offset(y: viewModel.needsLogin ? 0 : UIScreen.main.bounds.height)
             .allowsHitTesting(viewModel.needsLogin)
-            .animation(.easeInOut(duration: 0.4), value: viewModel.needsLogin)
+            .animation(.easeInOut(duration: AppConstants.UI.animationDuration), value: viewModel.needsLogin)
         }
         .onAppear {
-            viewModel.fetchPosts()
+            #if DEBUG
+            print("📱 [ContentView] Appeared - Posts count: \(viewModel.posts.count)")
+            #endif
         }
     }
 }

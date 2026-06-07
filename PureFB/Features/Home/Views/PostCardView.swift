@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 
 struct PostCardView: View {
@@ -6,7 +7,7 @@ struct PostCardView: View {
     // Logic tự động nhận diện bài Share dựa trên nội dung
     private var isShared: Bool {
         let text = post.content.lowercased()
-        return text.contains("đã chia sẻ") || text.contains("shared a link") || text.contains("shared")
+        return AppConstants.ContentFilter.sharedPostKeywords.contains { text.contains($0) }
     }
     
     var body: some View {
@@ -39,9 +40,9 @@ struct PostCardView: View {
                 
                 // Body: Clean typography, generous line-height
                 Text(post.content)
-                    .font(.system(size: 16, weight: .regular))
+                    .font(.system(size: AppConstants.UI.bodyFontSize, weight: .regular))
                     .foregroundColor(.offWhite)
-                    .lineSpacing(8) // Generous 1.5x line-height
+                    .lineSpacing(AppConstants.UI.contentLineSpacing)
                     .fixedSize(horizontal: false, vertical: true)
                 
                 // Media Container: Monochrome & slightly rounded
@@ -54,13 +55,13 @@ struct PostCardView: View {
                                 .aspectRatio(contentMode: .fill)
                                 .frame(maxWidth: .infinity)
                                 .frame(maxHeight: 400)
-                                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                                .clipShape(RoundedRectangle(cornerRadius: AppConstants.UI.cardCornerRadius, style: .continuous))
                                 .grayscale(1.0) // Absolute monochrome constraint
                         case .empty:
                             Rectangle()
                                 .fill(Color.softDarkGrey)
                                 .frame(height: 250)
-                                .cornerRadius(4)
+                                .cornerRadius(AppConstants.UI.cardCornerRadius)
                         default:
                             EmptyView()
                         }
@@ -68,9 +69,9 @@ struct PostCardView: View {
                     .padding(.top, 4)
                 }
             }
-            .padding(20)
+            .padding(AppConstants.UI.standardHorizontalPadding)
             .background(Color.softDarkGrey)
-            .cornerRadius(4)
+            .cornerRadius(AppConstants.UI.cardCornerRadius)
         }
     }
 }

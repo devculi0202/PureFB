@@ -4,6 +4,7 @@
 //
 //  Created by Duy Le on 7/6/26.
 //
+import Foundation
 import SwiftUI
 
 // Lớp Wrapper để giả lập "Grouped List"
@@ -18,9 +19,9 @@ struct SettingsGroup<Content: View>: View {
         VStack(spacing: 16) {
             content
         }
-        .padding(20)
+        .padding(AppConstants.UI.standardHorizontalPadding)
         .background(Color.softDarkGrey)
-        .cornerRadius(4)
+        .cornerRadius(AppConstants.UI.cardCornerRadius)
     }
 }
 

@@ -4,6 +4,7 @@
 //
 //  Created by Duy Le on 7/6/26.
 //
+import Foundation
 import SwiftUI
 
 struct SettingsView: View {
@@ -13,11 +14,11 @@ struct SettingsView: View {
     var body: some View {
         VStack(spacing: 0) {
             Text("Settings")
-                .font(.custom("Georgia", size: 24))
+                .font(.custom(AppConstants.UI.primaryFont, size: AppConstants.UI.titleFontSize))
                 .foregroundColor(.offWhite)
-                .padding(.vertical, 16)
+                .padding(.vertical, AppConstants.UI.standardVerticalPadding)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
+                .padding(.horizontal, AppConstants.UI.standardHorizontalPadding)
             
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 32) {
@@ -67,7 +68,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, AppConstants.UI.standardHorizontalPadding)
                 .padding(.bottom, 60)
             }
         }

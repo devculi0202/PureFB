@@ -5,6 +5,7 @@
 //  Created by Duy Le on 7/6/26.
 //
 
+import Foundation
 import SwiftUI
 
 struct MainTabView: View {

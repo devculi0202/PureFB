@@ -5,6 +5,7 @@
 //  Created by Duy Le on 7/6/26.
 //
 
+import Foundation
 import SwiftUI
 
 struct WhitelistView: View {
@@ -24,11 +25,11 @@ struct WhitelistView: View {
     var body: some View {
         VStack(spacing: 0) {
             Text("Whitelist")
-                .font(.custom("Georgia", size: 24))
+                .font(.custom(AppConstants.UI.primaryFont, size: AppConstants.UI.titleFontSize))
                 .foregroundColor(.offWhite)
-                .padding(.vertical, 16)
+                .padding(.vertical, AppConstants.UI.standardVerticalPadding)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
+                .padding(.horizontal, AppConstants.UI.standardHorizontalPadding)
             
             VStack(alignment: .leading, spacing: 8) {
                 ZStack(alignment: .leading) {
@@ -45,13 +46,13 @@ struct WhitelistView: View {
                         .padding(.horizontal, 16)
                 }
                 .background(Color.softDarkGrey)
-                .cornerRadius(4)
+                .cornerRadius(AppConstants.UI.cardCornerRadius)
                 
                 Text("* Hệ thống quét cục bộ trong phạm vi danh sách bạn bè đã đồng bộ.")
-                    .font(.system(size: 11))
+                    .font(.system(size: AppConstants.UI.captionFontSize))
                     .foregroundColor(.mutedGrey)
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, AppConstants.UI.standardHorizontalPadding)
             .padding(.bottom, 24)
             
             ScrollView(showsIndicators: false) {
@@ -74,7 +75,7 @@ struct WhitelistView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, AppConstants.UI.standardHorizontalPadding)
             }
         }
         .background(Color.pureBlack)

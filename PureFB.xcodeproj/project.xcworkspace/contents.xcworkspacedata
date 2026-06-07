@@ -4,4 +4,13 @@
    <FileRef
       location = "self:">
    </FileRef>
+   <FileRef
+      location = "group:CorePersistenceStoredPost.swift">
+   </FileRef>
+   <FileRef
+      location = "group:CorePersistenceStoredFriend.swift">
+   </FileRef>
+   <FileRef
+      location = "group:CorePersistencePersistenceHelpers.swift">
+   </FileRef>
 </Workspace>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "self:">
+   </FileRef>
+   <FileRef
+      location = "group:Constants.swift">
+   </FileRef>
+   <FileRef
+      location = "group:.swift">
+   </FileRef>
+   <FileRef
+      location = "group:PRIORITY1_COMPLETED.md">
+   </FileRef>
+   <FileRef
+      location = "group:AppConstants_QuickRef.md">
+   </FileRef>
+   <FileRef
+      location = "group:BUILD_TEST_REPORT.md">
+   </FileRef>
+   <FileRef
+      location = "group:TESTING_CHECKLIST.md">
+   </FileRef>
+   <FileRef
+      location = "group:CoreConstantsAppConstants.swift">
+   </FileRef>
+   <FileRef
+      location = "group:MOVE_APPCONSTANTS_GUIDE.md">
+   </FileRef>
+   <FileRef
+      location = "group:QUICK_FIX_AppConstants.md">
+   </FileRef>
+</Workspace>
