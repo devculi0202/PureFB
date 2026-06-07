@@ -34,8 +34,13 @@ class FeedViewModel: ObservableObject {
     }
     
     func fetchPosts() {
-        // Sửa lại URL khởi điểm để kích hoạt kiểm tra đăng nhập
-        let targetURLs = [URL(string: "https://m.facebook.com/")!]
-        scraperService.startScraping(urls: targetURLs)
-    }
+            // 🌟 Nạp danh sách các URL trang cá nhân bạn muốn lấy bài viết vào đây
+            // Tránh nạp m.facebook.com trống vì nó không sinh luồng GraphQL bài viết cá nhân ổn định
+            let targetURLs = [
+                URL(string: "https://m.facebook.com/vietnamnet.vn")!, // Ví dụ trang tin tức sử dụng m.fb
+                URL(string: "https://m.facebook.com/tinhte")!
+            ]
+            print("🔄 [ViewModel] Bắt đầu kích hoạt chuỗi cào dữ liệu cho \(targetURLs.count) mục tiêu...")
+            scraperService.startScraping(urls: targetURLs)
+        }
 }
